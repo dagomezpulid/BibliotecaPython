@@ -1,0 +1,15 @@
+1. Gestion de Stock:
+-Modificar entidad/tabla Libros para incluir un campo de Stock(Cantidad de copias disponibles).
+-Asegurar que el cambio se refleje en la base de datos(Migraciones o Script SQL).
+2. Modulo de prestamos:
+Crear una funcionalidad que permita registrar el prestamo de un libro a un usuario.
+-Inferfaz:
+-En el listado principal de libros(Index), agregar un boton o enlace "Prestar" para cada libro.
+-Este boton debe llevar a un formulario donde se ingrese:
+-Nombre del Solicitante.
+-Fecha de devolucion.
+-Logica de Negocio(Esto es sumamente importante):
+-Al confirmar el prestamo el stock tiene que disminuir en 1 la cantidad en Stock del libro seleccionado.
+-Validacion: El sistema NO debe permitir el préstamo de un libro si su stock es 0, en ese caso debe mostrar un mensaje de error al usuario.
+
+Condiciones de entrega:

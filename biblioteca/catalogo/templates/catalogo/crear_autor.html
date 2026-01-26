@@ -12,19 +12,20 @@
 
                 <form method="POST">
                     {% csrf_token %}
+                    {{ form.as_p }}
 
-                    <div class="mb-3">
-                        <label class="form-label">Nombre del Autor</label>
-                        <input type="text" name="nombre" class="form-control" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-success w-100">Guardar</button>
+                    <button type="submit" class="btn btn-success w-100">
+                        Guardar
+                    </button>
                 </form>
 
-                <a href="{% url 'lista_libros' %}" class="btn btn-link mt-3 w-100">⬅ Volver</a>
+                <a href="{% url 'lista_libros' %}" class="btn btn-link mt-3 w-100">
+                    ⬅ Volver
+                </a>
             </div>
         </div>
 
     </div>
 </div>
 {% endblock %}
+

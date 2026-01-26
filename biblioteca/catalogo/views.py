@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Libro, Autor
-from django.http import HttpResponse
+from .models import Libro
+from .forms import AutorForm, LibroForm
+from django.contrib import messages
+
 
 
 def lista_libros(request):
@@ -10,25 +12,29 @@ def lista_libros(request):
 
 def crear_autor(request):
     if request.method == "POST":
-        nombre = request.POST.get("nombre")
-
-        if nombre and nombre.strip():
-            Autor.objects.create(nombre=nombre.strip())
+        form = AutorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Autor creado correctamente.")
             return redirect("lista_libros")
+    else:
+        form = AutorForm()
 
-    return render(request, "catalogo/crear_autor.html")
+    return render(request, "catalogo/crear_autor.html", {"form": form})
+
+
 
 
 def crear_libro(request):
-    autores = Autor.objects.all()
-
     if request.method == "POST":
-        titulo = request.POST.get("titulo")
-        autor_id = request.POST.get("autor")
-
-        if titulo and titulo.strip() and autor_id:
-            autor = Autor.objects.get(id=autor_id)
-            Libro.objects.create(titulo=titulo.strip(), autor=autor)
+        form = LibroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Libro creado correctamente.")
             return redirect("lista_libros")
+    else:
+        form = LibroForm()
 
-    return render(request, "catalogo/crear_libro.html", {"autores": autores})
+    return render(request, "catalogo/crear_libro.html", {"form": form})
+
+
