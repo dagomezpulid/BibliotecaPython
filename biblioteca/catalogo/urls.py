@@ -7,4 +7,5 @@ urlpatterns = [
     path("libros/nuevo/", views.crear_libro, name="crear_libro"),
     path("libros/<int:libro_id>/prestar/", views.prestar_libro, name="prestar_libro"),
     path("devolver/", views.devolver_libro, name="devolver_libro"),
+    path("stock/ajustar/", views.ajustar_stock, name="ajustar_stock"),
 ]

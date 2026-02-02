@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Libro, Prestamo
-from .forms import AutorForm, LibroForm, PrestamoForm, DevolucionForm
+from .models import Libro, Prestamo, MovimientoStock
+from .forms import AutorForm, LibroForm, PrestamoForm, DevolucionForm, AjusteStockForm
 from django.contrib import messages
 
 def lista_libros(request):
@@ -89,3 +89,80 @@ def devolver_libro(request):
 
     return render(request, "catalogo/devolver_libro.html", {"form": form})
 
+def ajustar_stock(request):
+    if request.method == "POST":
+        form = AjusteStockForm(request.POST)
+        if form.is_valid():
+            libro = form.cleaned_data["libro"]
+            tipo = form.cleaned_data["tipo"]
+            cantidad = form.cleaned_data["cantidad"]
+            motivo = form.cleaned_data["motivo"]
+
+            if tipo == "SALIDA" and libro.stock < cantidad:
+                messages.error(
+                    request,
+                    "No es posible reducir el stock por debajo de cero."
+                )
+                return redirect("ajustar_stock")
+
+            # Registrar movimiento
+            MovimientoStock.objects.create(
+                libro=libro,
+                tipo=tipo,
+                cantidad=cantidad,
+                motivo=motivo
+            )
+
+            # Ajustar stock
+            if tipo == "ENTRADA":
+                libro.stock += cantidad
+            else:
+                libro.stock -= cantidad
+
+            libro.save()
+
+            messages.success(request, "Stock ajustado correctamente.")
+            return redirect("lista_libros")
+    else:
+        form = AjusteStockForm()
+
+    return render(request, "catalogo/ajustar_stock.html", {"form": form})
+
+def devolver_libro(request):
+    if request.method == "POST":
+        form = DevolucionForm(request.POST)
+        if form.is_valid():
+            solicitante = form.cleaned_data["solicitante"]
+            fecha_devolucion = form.cleaned_data["fecha_devolucion"]
+
+            prestamo = Prestamo.objects.filter(
+                solicitante=solicitante,
+                fecha_devolucion__isnull=True
+            ).select_related("libro").first()
+
+            if not prestamo:
+                messages.error(
+                    request,
+                    "No se encontró un préstamo activo para ese solicitante."
+                )
+                return redirect("devolver_libro")
+
+            prestamo.fecha_devolucion = fecha_devolucion
+            prestamo.save()
+
+            prestamo.libro.stock += 1
+            prestamo.libro.save()
+
+            messages.success(
+                request,
+                "Libro devuelto correctamente."
+            )
+            return redirect("lista_libros")
+    else:
+        form = DevolucionForm()
+
+    return render(
+        request,
+        "catalogo/devolver_libro.html",
+        {"form": form}
+    )

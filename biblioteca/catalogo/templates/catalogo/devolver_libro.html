@@ -1,0 +1,30 @@
+{% extends "catalogo/base.html" %}
+
+{% block title %}Devolución de Libro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="mb-4">Devolución de Libro</h2>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn btn-danger w-100">
+                        Confirmar Devolución
+                    </button>
+                </form>
+
+                <a href="{% url 'lista_libros' %}" class="btn btn-link mt-3 w-100">
+                    ⬅ Volver
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

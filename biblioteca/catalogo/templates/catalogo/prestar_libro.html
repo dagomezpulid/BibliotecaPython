@@ -1,0 +1,36 @@
+{% extends "catalogo/base.html" %}
+
+{% block title %}Prestar Libro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="mb-4">
+                    Préstamo de libro
+                </h2>
+
+                <p class="fw-bold">
+                    Libro: {{ libro.titulo }}
+                </p>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn btn-warning w-100">
+                        Confirmar Préstamo
+                    </button>
+                </form>
+
+                <a href="{% url 'lista_libros' %}" class="btn btn-link mt-3 w-100">
+                    ⬅ Volver
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
